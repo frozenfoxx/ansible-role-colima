@@ -1,0 +1,15 @@
+---
+- name: Get brew path
+  ansible.builtin.command: which brew
+  register: brew_path
+  changed_when: false
+  tags:
+    - colima
+
+- name: Launch colima now and at boot/login
+  ansible.builtin.command: "{{ brew_path.stdout }} services start colima"
+  become: true
+  become_user: "{{ colima_user }}"
+  changed_when: false
+  tags:
+    - colima

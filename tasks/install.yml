@@ -1,0 +1,24 @@
+---
+- name: Colima check
+  ansible.builtin.command: "colima --version"
+  changed_when: false
+  ignore_errors: true
+  register: colima_version
+  tags:
+    - colima
+
+- name: Check if Homebrew is installed
+  ansible.builtin.command: "/usr/bin/which -s brew"
+  register: brew_check
+  changed_when: false
+  failed_when: false
+  tags:
+    - colima
+
+- name: Install Colima using Homebrew
+  community.general.homebrew:
+    name: colima
+    state: present
+  when: brew_check.rc != 0
+  tags:
+    - colima
