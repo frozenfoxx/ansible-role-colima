@@ -4,7 +4,6 @@
     paths:
       - /usr/local/bin
       - /opt/homebrew/bin
-    paths_exist: true  # Ensure paths exist before searching
     patterns: brew
   register: brew_find
 
