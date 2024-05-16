@@ -1,13 +1,19 @@
 ---
-- name: Get brew path
-  ansible.builtin.command: which brew
-  register: brew_path
-  changed_when: false
-  tags:
-    - colima
+- name: Find brew executable
+  ansible.builtin.find:
+    paths:
+      - /usr/local/bin
+      - /opt/homebrew/bin
+    paths_exist: true  # Ensure paths exist before searching
+    patterns: brew
+  register: brew_find
+
+- name: Set brew_path based on find results
+  set_fact:
+    brew_path: "{{ brew_find.matched.0 }}"
 
 - name: Launch colima now and at boot/login
-  ansible.builtin.command: "{{ brew_path.stdout }} services start colima"
+  ansible.builtin.command: "{{ brew_path }} services start colima"
   become: true
   become_user: "{{ colima_user }}"
   changed_when: false
