@@ -1,10 +1,10 @@
 ---
 - name: Install
-  ansible.builtin.import_rules: install.yml
+  ansible.builtin.import_tasks: install.yml
   tags:
     - colima
 
 - name: Launch services
-  ansible.builtin.import_rules: services.yml
+  ansible.builtin.import_tasks: services.yml
   tags:
     - colima
