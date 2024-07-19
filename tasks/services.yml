@@ -9,7 +9,7 @@
     - colima
 
 - name: Determine Homebrew prefix for x86_64 architecture
-  ansible.builtin.shell: /opt/homebrew/bin/brew --prefix
+  ansible.builtin.shell: /usr/local/bin/brew --prefix
   register: colima_homebrew_prefix_x86_64
   when: ansible_architecture == 'x86_64'
   changed_when: false
