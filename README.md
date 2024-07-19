@@ -11,10 +11,6 @@ Ansible role to install and manage Colima
 
 - `colima_user`: user to run startup with (default `user`)
 
-# Dependencies
-
-None.
-
 # Usage
 
 ```
