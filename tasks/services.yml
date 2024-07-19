@@ -1,20 +1,30 @@
 ---
-- name: Find brew command
-  ansible.builtin.shell: |
-    if [ -x /usr/local/bin/brew ]; then
-      echo /usr/local/bin/brew;
-    elif [ -x /opt/homebrew/bin/brew ]; then
-      echo /opt/homebrew/bin/brew;
-    else
-      exit 1;
-    fi
-  register: brew_path
+- name: Determine Homebrew prefix for arm64 architecture
+  ansible.builtin.shell: /opt/homebrew/bin/brew --prefix
+  register: colima_homebrew_prefix_arm64
+  when: ansible_architecture == 'aarch64'
   changed_when: false
+  check_mode: no
+  tags:
+    - colima
+
+- name: Determine Homebrew prefix for x86_64 architecture
+  ansible.builtin.shell: /opt/homebrew/bin/brew --prefix
+  register: colima_homebrew_prefix_x86_64
+  when: ansible_architecture == 'x86_64'
+  changed_when: false
+  check_mode: no
+  tags:
+    - colima
+
+- name: Set colima_homebrew_prefix based on architecture
+  set_fact:
+    colima_homebrew_prefix: "{{ colima_homebrew_prefix_arm64.stdout if ansible_architecture == 'aarch64' else colima_homebrew_prefix_x86_64.stdout }}"
   tags:
     - colima
 
 - name: Launch colima now and at boot/login
-  ansible.builtin.command: "{{ brew_path.stdout.strip() }} services start colima"
+  ansible.builtin.command: "{{ colima_homebrew_prefix }}/bin/brew services start colima"
   become: true
   become_user: "{{ colima_user }}"
   changed_when: false
